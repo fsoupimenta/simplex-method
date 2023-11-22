@@ -2,6 +2,17 @@ import os
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill, Border, Side
 
+dict_rows_header = {'x1': 'Atuador estático', 'x2': 'Atuador de rotação', 'x3': 'Atuador pneumático',
+                    'x4': 'Base T galvanizada', 'x5': 'Válvula borboleta', 'x6': 'Interruptor deslizante',
+                    'x7': 'Interruptor de tecla', 'x8': 'Inversor', 'x9': 'Chicote 7 vias', 'x10': 'Chicote 4 vias',
+                    'x11': 'Comutador duplo', 'x12': 'Comutador inversor', 'x13': 'Comutador de ignição',
+                    'x14': 'Válvula Bipartida', 'x15': 'Válvula Monobloco', 'x16': 'Junta de expansão',
+                    'x17': 'Base X galvanizada', 'x18': 'Microrutor', 'x19': 'Chave micro switch',
+                    'x20': 'Terminal 2 eixos', 'x21': 'Terminal 4 eixos', 'x22': 'Terminal 6 eixos',
+                    'x23': 'Sensor de pressão', 'x24': 'Sensor de aproximação', 'x25': 'Flexinity',
+                    'x26': 'Flexinity Mini', 'x27': 'Oscilador', 'x28': 'Timer', 'x29': 'Termistor',
+                    'x30': 'Potenciômetro deslizante', 'Z': 'Objective'}
+
 
 def export_to_sheet(columns_header, rows_header, matrix, last_row_filled, columns_to_color=None, row_to_color=None):
     file_name = "simplex.xlsx"
@@ -39,3 +50,11 @@ def export_to_sheet(columns_header, rows_header, matrix, last_row_filled, column
             cell.border = border_style
 
     workbook.save(file_name)
+
+
+def export_results_to_txt(rows_headers, matrix, number_of_iterations):
+    with open('results.txt', 'w') as file:
+        for i, row in enumerate(rows_headers):
+            if row in dict_rows_header.keys():
+                file.write(f'{dict_rows_header[row]} : {matrix[i][-1]} \n')
+        file.write(f'Number of iterations : {number_of_iterations}')

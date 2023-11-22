@@ -1,7 +1,5 @@
 import numpy as np
 
-from simplex import Simplex
-
 non_basic_variables = ['x' + str(i) for i in range(1, 31)]
 basic_variables = ['f' + str(j) for j in range(1, 33)]
 columns_headers = non_basic_variables + basic_variables + ['b']
