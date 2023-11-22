@@ -4,15 +4,15 @@ from output import export_to_sheet, export_results_to_txt
 
 
 class Simplex:
-    def __init__(self, matrix, columns_headers, rows_headers):
+    def __init__(self, matrix: np.array, columns_headers: list, rows_headers: list):
         self.matrix = np.array(matrix).astype(float)
         self.columns_headers = columns_headers
         self.rows_headers = rows_headers
 
-    def get_pivot_column(self):
-        return np.argmin(self.matrix[-1])
+    def get_pivot_column(self) -> int:
+        return int(np.argmin(self.matrix[-1]))
 
-    def get_pivot_row(self, pivot_column: int):
+    def get_pivot_row(self, pivot_column: int) -> int:
         pivot_row = None
         comparator = float('inf')
         for i, row in enumerate(self.matrix[:-1]):
@@ -22,7 +22,7 @@ class Simplex:
 
         return pivot_row
 
-    def matrix_scaling(self, pivot_row: int, pivot_column: int):
+    def matrix_scaling(self, pivot_row: int, pivot_column: int) -> None:
         self.matrix[pivot_row] = np.divide(self.matrix[pivot_row], self.matrix[pivot_row][pivot_column])
 
         for i in range(self.matrix.shape[0]):
@@ -33,20 +33,20 @@ class Simplex:
 
     def simplex(self):
         row_size = self.matrix.shape[0] + 2
-        count = 1
+        last_index_for_sheet = 1
         number_of_iterations = 0
         while min(self.matrix[-1]) < 0:
             pivot_column = self.get_pivot_column()
             pivot_row = self.get_pivot_row(pivot_column)
             export_to_sheet(columns_header=self.columns_headers, rows_header=self.rows_headers,
                             columns_to_color=pivot_column, row_to_color=pivot_row, matrix=self.matrix,
-                            last_row_filled=count)
+                            last_row_filled=last_index_for_sheet)
             self.matrix_scaling(pivot_row, pivot_column)
             self.rows_headers[pivot_row] = self.columns_headers[pivot_column]
-            count += row_size
+            last_index_for_sheet += row_size
             number_of_iterations += 1
         export_to_sheet(columns_header=self.columns_headers, rows_header=self.rows_headers, matrix=self.matrix,
-                        last_row_filled=count)
+                        last_row_filled=last_index_for_sheet)
         export_results_to_txt(rows_headers=self.rows_headers, matrix=self.matrix,
                               number_of_iterations=number_of_iterations)
 

@@ -1,4 +1,6 @@
 import os
+
+import numpy as np
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill, Border, Side
 
@@ -14,7 +16,8 @@ dict_rows_header = {'x1': 'Atuador estático', 'x2': 'Atuador de rotação', 'x3
                     'x30': 'Potenciômetro deslizante', 'Z': 'Objective'}
 
 
-def export_to_sheet(columns_header, rows_header, matrix, last_row_filled, columns_to_color=None, row_to_color=None):
+def export_to_sheet(columns_header: list, rows_header: list, matrix: np.array, last_row_filled: int,
+                    columns_to_color=None, row_to_color=None) -> None:
     file_name = "simplex.xlsx"
     if os.path.exists(file_name):
         workbook = load_workbook(file_name)
@@ -52,7 +55,7 @@ def export_to_sheet(columns_header, rows_header, matrix, last_row_filled, column
     workbook.save(file_name)
 
 
-def export_results_to_txt(rows_headers, matrix, number_of_iterations):
+def export_results_to_txt(rows_headers: list, matrix: np.array, number_of_iterations: int):
     with open('results.txt', 'w') as file:
         for i, row in enumerate(rows_headers):
             if row in dict_rows_header.keys():
