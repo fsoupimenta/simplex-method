@@ -78,7 +78,7 @@ def create_matrix():
 
     matrix.append(demands)
     matrix = np.array(matrix).astype(float)
-
+    print(matrix)
     return matrix
 
 
