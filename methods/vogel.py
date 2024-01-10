@@ -58,16 +58,16 @@ class Vogel:
             zeros_row[-1] = difference
             self.matrix = np.insert(self.matrix, 0, zeros_row, axis=0)
 
-    def capacity_penalty_bigger(self, temp_matrix, max_index_last_column):
-        penalty_line = temp_matrix[max_index_last_column, : -2]
+    def capacity_penalty_bigger(self, max_index_last_column):
+        penalty_line = self.matrix[max_index_last_column, : -2]
         minor_value_index_column = np.argmin(penalty_line)
 
-        min_between = min(temp_matrix[max_index_last_column, -2], temp_matrix[-2, minor_value_index_column])
+        min_between = min(self.matrix[max_index_last_column, -2], self.matrix[-2, minor_value_index_column])
 
         self.operate_demand_capacity(min_between, minor_value_index_column, max_index_last_column)
 
         self.construct_answer(min_between, minor_value_index_column, max_index_last_column)
-        self.construct_zmax(min_between, temp_matrix[max_index_last_column, minor_value_index_column])
+        self.construct_zmax(min_between, self.matrix[max_index_last_column, minor_value_index_column])
 
         self.matrix = self.matrix[:-1, :-1]
 
@@ -76,16 +76,16 @@ class Vogel:
         if self.matrix[-1, minor_value_index_column] == 0:
             self.matrix[:-1, minor_value_index_column] = np.inf
 
-    def demand_penalty_bigger(self, temp_matrix, max_index_last_row):
-        penalty_column = temp_matrix[:-2, max_index_last_row]
+    def demand_penalty_bigger(self, max_index_last_row):
+        penalty_column = self.matrix[:-2, max_index_last_row]
         minor_value_index_row = np.argmin(penalty_column)
 
-        min_between = min(temp_matrix[-2, max_index_last_row], temp_matrix[minor_value_index_row, -2])
+        min_between = min(self.matrix[-2, max_index_last_row], self.matrix[minor_value_index_row, -2])
 
         self.operate_demand_capacity(min_between, max_index_last_row, minor_value_index_row)
 
         self.construct_answer(min_between, max_index_last_row, minor_value_index_row)
-        self.construct_zmax(min_between, temp_matrix[minor_value_index_row, max_index_last_row])
+        self.construct_zmax(min_between, self.matrix[minor_value_index_row, max_index_last_row])
 
         self.matrix = self.matrix[:-1, :-1]
 
@@ -95,7 +95,6 @@ class Vogel:
             self.matrix[minor_value_index_row, :-1] = np.inf
 
     def vogel_method(self):
-        temp_matrix = None
         self.dummy()
 
         while True:
@@ -133,14 +132,13 @@ class Vogel:
                 # That logic way needs to be verified
                 break
 
-            temp_matrix = self.matrix
             max_index_last_row = np.nanargmax(self.matrix[-1])
             max_index_last_column = np.nanargmax(self.matrix[:, -1])
             value_last_row = self.matrix[-1, max_index_last_row]
             value_last_column = self.matrix[max_index_last_column, -1]
 
             if value_last_column >= value_last_row:
-                self.capacity_penalty_bigger(temp_matrix, max_index_last_column)
+                self.capacity_penalty_bigger(max_index_last_column)
 
             else:
-                self.demand_penalty_bigger(temp_matrix, max_index_last_row)
+                self.demand_penalty_bigger(max_index_last_row)
